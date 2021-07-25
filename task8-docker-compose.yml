@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  ghost-app:
+    container_name: ghost-app
+    image: ghost:alpine
+    ports:
+      - "80:2368"
+    networks:
+      - ghost-network
+    environment:
+      - database__client=mysql
+      - database__connection__host=db
+      - database__connection__user=root
+      - database__connection__password=example
+      - database__connection__database=ghost
+    depends_on:
+      - db
+  db:
+    container_name: db
+    image: mysql:5.7
+    volumes:
+    - "blog-data:/var/lib/mysql"
+    networks:
+      - ghost-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=example
+
+networks:
+  ghost-network:
+    driver: bridge
+
+volumes:
+  blog-data:
